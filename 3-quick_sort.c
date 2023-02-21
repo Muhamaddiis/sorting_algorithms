@@ -1,88 +1,82 @@
 #include "sort.h"
 
-void swap(int *x, int *y);
-void quick_sort(int array[], size_t size);
-void quicksort_recursion(int *array, size_t size, int low, int high);
-size_t partition(int *array, size_t size, size_t low, size_t high);
-
 /**
- * swap - a function to swap elements
- * @x: the first element
- * @y: the second element
- * Return: nothing
- */
-
-void swap(int *x, int *y)
-{
-	int temp = *x;
-	*x = *y;
-	*y = temp;
-}
-
-/**
- * quick_sort - a frame function to call the quicksort recursion function
+ * quick_sort - quick sort algorithm using lomuto
  * @array: the array to sort
  * @size: the size of the array
- *
- * Return: nothing
+ * Return: a sorted array
  */
+
 
 void quick_sort(int *array, size_t size)
 {
-	quicksort_recursion(array, size, 0, size - 1);
+	recursive_quick_sort(array, size, 0, size - 1);
 }
 
 /**
- * quicksort_recursion - a recursion function for the quick sort
- * @array: the size of the array
+ * recursive_quick_sort - recursive function
+ * @array: the array to sort
  * @size: the size of the array
- * @low: the starting point of the loop
- * @high: the end point od the array
+ * @start: the starting index
+ * @end: the end of the array
  *
  * Return: nothing
  */
 
-void quicksort_recursion(int *array, size_t size, int low, int high)
+void recursive_quick_sort(int *array, size_t size, int start, int end)
 {
-	if (size < 2 || array == NULL)
-		return;
+	int p;
 
-	if (low < high)
+	if (start < end)
 	{
-		int pivot_index = partition(array, size, low, high);
+		p = partition(array, size, start, end);
 
-		quicksort_recursion(array, size, low, pivot_index - 1);
-		quicksort_recursion(array, size, pivot_index + 1, high);
+		recursive_quick_sort(array, size, start, p - 1);
+		recursive_quick_sort(array, size, p + 1, end);
 	}
 }
 
+
 /**
- * partition - the function to partition the array
+ * partition - partition of the array
  * @array: the array to partition
  * @size: the size of the array
- * @low: the low point of the partitioned array
- * @high: the high point of the partitioned array
+ * @start: the start index
+ * @end: the end index
  *
- * Return: the position of the last swapped element .previous pivot
+ * Return: the partition index
  */
 
-size_t partition(int *array, size_t size, size_t low, size_t high)
+size_t partition(int *array, size_t size, int start, int end)
 {
-	int pivot_value = array[high];
+	int pivot = array[end];
+	int i = start - 1;
+	int j;
 
-	size_t j, i = low;
-
-	for (j = low; j < high; j++)
+	for (j = start; j <= end - 1; j++)
 	{
-		if (array[j] <= pivot_value)
+		if (array[j] < pivot)
 		{
-			swap(&array[i], &array[j]);
 			i++;
+			swap_int1(array, i, j);
 			print_array(array, size);
 		}
 	}
+	swap_int1(array, i + 1, end);
+	return (i + 1);
+}
 
-	swap(&array[i], &array[high]);
-	print_array(array, size);
-	return (i);
+/**
+ * swap_int1 - a function to swap integers
+ * @array: array to use
+ * @a: first index
+ * @b: the second index
+ */
+
+void swap_int1(int *array, int a, int b)
+{
+	int tmp;
+	tmp = array[a];
+	array[a] = array[b];
+	array[b] = tmp;
 }
